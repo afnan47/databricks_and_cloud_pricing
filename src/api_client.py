@@ -8,7 +8,6 @@ from typing import Dict, List, Optional, Any
 from .config import (
     VANTAGE_API_TOKEN, VANTAGE_API_BASE_URL,
     DATABRICKS_AWS_PRICING_URL, DATABRICKS_GCP_PRICING_URL,
-    get_vantage_plan_name
 )
 
 logger = logging.getLogger(__name__)

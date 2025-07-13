@@ -115,19 +115,11 @@ def main():
             index=DATABRICKS_COMPUTE_TYPES.index(DEFAULT_COMPUTE_TYPE)
         )
         
-        # API Status
-        st.subheader("🔑 API Status")
-        if VANTAGE_API_TOKEN:
-            st.success("✅ Vantage API token configured")
-        else:
-            st.error("❌ Vantage API token missing")
-        
         # Export Options
-        st.subheader("📊 Export Options")
-        export_format = st.selectbox(
-            "Export Format",
-            ["CSV", "JSON"]
-        )
+        # export_format = st.selectbox(
+        #     "Export Format",
+        #     ["CSV", "JSON"]
+        # )
     
     # Main content area
     col1, col2 = st.columns([2, 1])
@@ -271,7 +263,7 @@ def main():
                     st.success("✅ Pricing calculated successfully!")
                     
                     # Display results
-                    display_results(st.session_state.results)
+                    # display_results(st.session_state.results)
                     
                 else:
                     st.error("❌ Failed to calculate pricing. Please check your configuration and API token.")

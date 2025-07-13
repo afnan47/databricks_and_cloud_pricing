@@ -10,4 +10,4 @@ wheels/
 # Virtual environments
 .venv
 notes.txt
-env.example
+.env

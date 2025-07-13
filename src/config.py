@@ -151,13 +151,5 @@ def get_instance_type_details(instance_name):
         print(f"Error getting instance details: {e}")
         return None
 
-def get_vantage_plan_name(plan_name):
-    """
-    Get the Vantage plan name from the Databricks plan name.
-    """
-    if plan_name == "Standard":
-        return "std"
-    return plan_name
-
 # Load instance types
 INSTANCE_TYPES = load_instance_types_from_file() 
