@@ -1,11 +1,24 @@
 [project]
 name = "databricks-and-cloud-pricing"
 version = "0.1.0"
-description = "Add your description here"
+description = "A web application for calculating combined AWS and Databricks pricing"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pytest>=8.4.1",
     "requests>=2.32.4",
     "streamlit>=1.46.1",
+    "pandas>=2.0.0",
+    "plotly>=5.0.0",
+    "python-dotenv>=1.0.0",
 ]
+
+[project.scripts]
+pricing-calculator = "src.main:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
