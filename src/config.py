@@ -5,12 +5,9 @@ import os
 import json
 from dotenv import load_dotenv
 import requests
+import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
-# Load environment variables
-load_dotenv()
-
-# Vantage API Configuration
-VANTAGE_API_TOKEN = os.getenv("VANTAGE_API_TOKEN", "")
 VANTAGE_API_BASE_URL = "https://api.vantage.sh"
 
 # Databricks Pricing URLs
@@ -148,5 +145,20 @@ def get_instance_types_by_compute_type(compute_type):
         print(f"Error filtering instance types by compute type: {e}")
         return []
 
+def get_vantage_token():
+    """
+    Gets the Vantage API token from Streamlit secrets if deployed,
+    otherwise from a local .env file.
+    """
+    # Check if running in Streamlit Cloud
+    if hasattr(st, 'secrets'):
+        try:
+            return st.secrets["VANTAGE_API_TOKEN"]
+        except (StreamlitSecretNotFoundError, KeyError):
+            load_dotenv()
+            return os.getenv("VANTAGE_API_TOKEN")
+        
+
 # Load instance types
 INSTANCE_TYPES = load_instance_types_from_file() 
+VANTAGE_API_TOKEN = get_vantage_token() 
