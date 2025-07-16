@@ -260,11 +260,13 @@ def main():
                         st.session_state.results = []
                     st.session_state.results.append(result)
                     
-                    st.success("✅ Pricing calculated successfully!")
+                    if result.message:
+                        st.info(result.message)
+                    else:
+                        st.success("✅ Pricing calculated successfully!")
                     
                     # Display results
                     # display_results(st.session_state.results)
-                    
                 else:
                     st.error("❌ Failed to calculate pricing. Please check your configuration and API token.")
                     
@@ -309,7 +311,8 @@ def main():
                     "total_cost_per_hour": result.total_cost_per_hour,
                     "aws_cost_per_run": result.aws_cost_per_run,
                     "databricks_cost_per_run": result.databricks_cost_per_run,
-                    "total_cost_per_run": result.total_cost_per_run
+                    "total_cost_per_run": result.total_cost_per_run,
+                    "message": getattr(result, "message", "")
                 })
             json_data = json.dumps(data, indent=2)
             st.download_button(

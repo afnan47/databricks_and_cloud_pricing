@@ -30,6 +30,7 @@ class PricingResult:
     total_cost_per_run: float
     total_hours_per_run: float
     instance_config: InstanceConfig
+    message: str = ""  # Optional message for user feedback
 
 class PricingCalculator:
     """Main calculator for AWS and Databricks pricing."""
@@ -55,8 +56,18 @@ class PricingCalculator:
             )
             
             if aws_hourly_rate is None:
-                logger.error(f"Could not get AWS pricing for {config.instance_type}")
-                return None
+                logger.warning(f"Cluster not found for AWS instance type {config.instance_type}. Returning 0 for all costs.")
+                return PricingResult(
+                    aws_cost_per_hour=0.0,
+                    databricks_cost_per_hour=0.0,
+                    total_cost_per_hour=0.0,
+                    aws_cost_per_run=0.0,
+                    databricks_cost_per_run=0.0,
+                    total_cost_per_run=0.0,
+                    total_hours_per_run=config.hours_per_run,
+                    instance_config=config,
+                    message="Cluster not found for AWS. All costs set to 0."
+                )
             
             # Get Databricks pricing
             databricks_hourly_rate = self.databricks_client.get_instance_pricing(
@@ -87,9 +98,10 @@ class PricingCalculator:
                 databricks_cost_per_run=databricks_cost_per_run,
                 total_cost_per_run=total_cost_per_run,
                 total_hours_per_run=total_hours_per_run,
-                instance_config=config
+                instance_config=config,
+                message=""
             )
-            
+        
         except Exception as e:
             logger.error(f"Error calculating pricing: {e}")
             return None

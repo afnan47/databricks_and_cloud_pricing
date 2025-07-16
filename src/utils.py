@@ -31,10 +31,6 @@ def results_to_dataframe(results: List[PricingResult]) -> pd.DataFrame:
             "Compute Type": config.compute_type,
             "Plan": config.plan,
             "Hours per Run": config.hours_per_run,
-            "Total Hours per Run": result.total_hours_per_run,
-            "AWS Cost per Hour": format_currency(result.aws_cost_per_hour),
-            "Databricks Cost per Hour": format_currency(result.databricks_cost_per_hour),
-            "Total Cost per Hour": format_currency(result.total_cost_per_hour),
             "AWS Cost per Run": format_currency(result.aws_cost_per_run),
             "Databricks Cost per Run": format_currency(result.databricks_cost_per_run),
             "Total Cost per Run": format_currency(result.total_cost_per_run)

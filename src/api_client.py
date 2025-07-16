@@ -51,7 +51,7 @@ class VantageAPIClient:
             
             if not product_id:
                 logger.error(f"Could not find product ID for instance type {instance_type}")
-                return self._get_fallback_pricing(instance_type, region, plan)
+                return 0
             
 
             instance_id = f"{product_id}-{region.replace('-', '_')}-on_demand-linux"
@@ -67,48 +67,11 @@ class VantageAPIClient:
             
         except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching AWS pricing: {e}")
-            return self._get_fallback_pricing(instance_type, region, plan)
+            return 0
         except Exception as e:
             logger.error(f"Unexpected error in AWS pricing: {e}")
-            return self._get_fallback_pricing(instance_type, region, plan)
+            return 0
     
-    def _get_fallback_pricing(self, instance_type: str, region: str, plan: str = "Enterprise") -> Optional[float]:
-        """
-        Get fallback pricing when API fails.
-        
-        Args:
-            instance_type: AWS instance type
-            region: AWS region
-            plan: Databricks plan (Standard, Premium, Enterprise)
-            
-        Returns:
-            Hourly price in USD, or None if not found
-        """
-        if instance_type in FALLBACK_AWS_PRICING:
-            region_pricing = FALLBACK_AWS_PRICING[instance_type]
-            # Use the region if available, otherwise use us-east-1 as default
-            return region_pricing.get(region, region_pricing.get("us-east-1"))
-        
-        # If instance type not in fallback data, estimate based on common patterns
-        if "m5d" in instance_type:
-            if "8xlarge" in instance_type:
-                return 2.496
-            elif "4xlarge" in instance_type:
-                return 1.248
-            elif "2xlarge" in instance_type:
-                return 0.624
-        elif "c6id" in instance_type:
-            if "2xlarge" in instance_type:
-                return 0.544
-            elif "xlarge" in instance_type:
-                return 0.272
-        elif "r6id" in instance_type:
-            if "2xlarge" in instance_type:
-                return 0.8064
-            elif "xlarge" in instance_type:
-                return 0.4032
-        
-        return None
     
     def get_available_instances(self, region: str = "us-east-1") -> List[str]:
         """
@@ -135,7 +98,7 @@ class VantageAPIClient:
                     break
             
             if not aws_ec2_product:
-                return list(FALLBACK_AWS_PRICING.keys())
+                return None
             
             product_id = aws_ec2_product.get("id")
             
@@ -157,13 +120,13 @@ class VantageAPIClient:
             
             # If no instances found from API, return fallback list
             if not instance_types:
-                return list(FALLBACK_AWS_PRICING.keys())
+                return None
             
             return list(instance_types)
             
         except Exception as e:
             logger.error(f"Error fetching available instances: {e}")
-            return list(FALLBACK_AWS_PRICING.keys())
+            return None
 
 
 class DatabricksAPIClient:
