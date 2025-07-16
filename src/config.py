@@ -4,6 +4,7 @@ Configuration settings for the pricing calculator.
 import os
 import json
 from dotenv import load_dotenv
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -27,8 +28,7 @@ AWS_REGIONS = [
 DATABRICKS_COMPUTE_TYPES = [
     "Jobs Compute",
     "All-Purpose Compute", 
-    "SQL Compute",
-    "ML Runtime"
+    "SQL Compute"
 ]
 
 # Databricks Plans
@@ -66,39 +66,32 @@ def load_instance_types_from_file():
         print(f"Error loading instance types from file: {e}")
         return []
 
-def get_instance_type_categories():
+def get_aws_pricing_data():
     """
-    Categorize instance types for better organization.
-    Returns a dictionary with categories.
+    Fetch and cache the AWS pricing JSON from Databricks if not already cached locally.
+    Returns the loaded JSON data as a list of dicts.
     """
-    instance_types = load_instance_types_from_file()
-    
-    categories = {
-        "General Purpose": [],
-        "Compute Optimized": [],
-        "Memory Optimized": [],
-        "Storage Optimized": [],
-        "GPU Instances": [],
-        "Other": []
-    }
-    
-    for instance in instance_types:
-        instance_lower = instance.lower()
-        
-        if any(gpu in instance_lower for gpu in ['gpu', 'p3', 'p4', 'g4', 'g5']):
-            categories["GPU Instances"].append(instance)
-        elif any(comp in instance_lower for comp in ['c5', 'c6', 'c7', 'compute']):
-            categories["Compute Optimized"].append(instance)
-        elif any(mem in instance_lower for mem in ['r5', 'r6', 'r7', 'x1', 'x2', 'memory']):
-            categories["Memory Optimized"].append(instance)
-        elif any(storage in instance_lower for storage in ['d2', 'd3', 'h1', 'i3', 'storage']):
-            categories["Storage Optimized"].append(instance)
-        elif any(general in instance_lower for general in ['m5', 'm6', 'm7', 't3', 't4']):
-            categories["General Purpose"].append(instance)
-        else:
-            categories["Other"].append(instance)
-    
-    return categories
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    aws_json_path = os.path.join(current_dir, "aws.json")
+    # If not cached, fetch and save
+    if not os.path.exists(aws_json_path):
+        try:
+            resp = requests.get(DATABRICKS_AWS_PRICING_URL)
+            resp.raise_for_status()
+            with open(aws_json_path, "w", encoding="utf-8") as f:
+                f.write(resp.text)
+        except Exception as e:
+            print(f"Error fetching AWS pricing JSON: {e}")
+            return []
+    # Load from file
+    try:
+        with open(aws_json_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        return data
+    except Exception as e:
+        print(f"Error loading cached AWS pricing JSON: {e}")
+        return []
+
 
 def get_instance_type_details(instance_name):
     """
@@ -106,25 +99,14 @@ def get_instance_type_details(instance_name):
     Returns a dictionary with instance details.
     """
     try:
-        # Get the path to the aws.json file
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        aws_json_path = os.path.join(current_dir, "aws.json")
-        
-        if not os.path.exists(aws_json_path):
-            return None
-        
-        with open(aws_json_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-        
+        data = get_aws_pricing_data()
         # Find matching instances
         matching_instances = []
         for item in data:
             if isinstance(item, dict) and item.get('instance') == instance_name:
                 matching_instances.append(item)
-        
         if not matching_instances:
             return None
-        
         # Return the first match with all available details
         instance_info = matching_instances[0]
         return {
@@ -146,10 +128,25 @@ def get_instance_type_details(instance_name):
             'dbu_input': instance_info.get('dbu_input'),
             'dbu_output': instance_info.get('dbu_output')
         }
-    
     except Exception as e:
         print(f"Error getting instance details: {e}")
         return None
+
+
+def get_instance_types_by_compute_type(compute_type):
+    """
+    Return a list of instance types that have the given Databricks Compute Type.
+    """
+    try:
+        data = get_aws_pricing_data()
+        filtered = set()
+        for item in data:
+            if isinstance(item, dict) and item.get('compute') == compute_type:
+                filtered.add(item.get('instance'))
+        return sorted(filtered)
+    except Exception as e:
+        print(f"Error filtering instance types by compute type: {e}")
+        return []
 
 # Load instance types
 INSTANCE_TYPES = load_instance_types_from_file() 

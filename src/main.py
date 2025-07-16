@@ -13,7 +13,8 @@ from .config import (
     AWS_REGIONS, DATABRICKS_COMPUTE_TYPES, DATABRICKS_PLANS,
     CLOUD_PROVIDERS, DEFAULT_REGION, DEFAULT_COMPUTE_TYPE,
     DEFAULT_PLAN, DEFAULT_CLOUD_PROVIDER, VANTAGE_API_TOKEN, INSTANCE_TYPES,
-    get_instance_type_categories, get_instance_type_details
+    get_instance_type_details,
+    get_instance_types_by_compute_type
 )
 from .calculator import PricingCalculator, InstanceConfig, PricingResult
 from .utils import format_currency, results_to_dataframe, export_to_csv, export_to_json, get_summary_stats
@@ -133,30 +134,27 @@ def main():
             
             with col1:
                 # Instance type selection with search
-                if INSTANCE_TYPES:
-                    # Create a more organized dropdown with categories
+                filtered_instance_types = get_instance_types_by_compute_type(compute_type) if compute_type else INSTANCE_TYPES
+                if filtered_instance_types:
                     instance_type = st.selectbox(
                         "Instance Type",
-                        options=[""] + INSTANCE_TYPES,
+                        options=[""] + filtered_instance_types,
                         index=0,
                         help="Search and select an AWS instance type from the available options. Type to search!"
                     )
-                    
                     # Add search filter
                     search_term = st.text_input(
                         "Search instance types",
                         placeholder="Type to filter instance types...",
                         help="Filter instance types by name"
                     )
-                    
                     if search_term:
-                        filtered_instances = [inst for inst in INSTANCE_TYPES if search_term.lower() in inst.lower()]
-                        if filtered_instances:
-                            st.write(f"**Found {len(filtered_instances)} matching instances:**")
-                            st.caption(", ".join(filtered_instances[:10]) + ("..." if len(filtered_instances) > 10 else ""))
+                        filtered_search = [inst for inst in filtered_instance_types if search_term.lower() in inst.lower()]
+                        if filtered_search:
+                            st.write(f"**Found {len(filtered_search)} matching instances:**")
+                            st.caption(", ".join(filtered_search[:10]) + ("..." if len(filtered_search) > 10 else ""))
                         else:
                             st.warning("No instance types found matching your search term.")
-                    
                     # Show instance details if selected
                     if instance_type and instance_type.strip():
                         details = get_instance_type_details(instance_type)
@@ -279,7 +277,7 @@ def main():
         display_results(st.session_state.results)
         
         # Export options
-        st.header("📤 Export Results")
+        st.header("📤 Export Costs")
         col1, col2 = st.columns(2)
         
         with col1:
@@ -355,7 +353,7 @@ def display_results(results: List[PricingResult]):
 
     
     # Detailed results table
-    st.subheader("📋 Detailed Results")
+    st.subheader("📋 Detailed Costs")
     
     df = results_to_dataframe(results)
     st.dataframe(df, use_container_width=True)
