@@ -11,3 +11,4 @@ wheels/
 .venv
 notes.txt
 .env
+.vscode
