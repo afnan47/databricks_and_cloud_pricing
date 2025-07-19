@@ -148,7 +148,7 @@ The application includes a comprehensive database of AWS instance types sourced 
 | `VANTAGE_API_TOKEN` | Your Vantage API token | Required |
 | `DEFAULT_REGION` | Default AWS region | `us-east-1` |
 | `DEFAULT_COMPUTE_TYPE` | Default Databricks compute type | `Jobs Compute` |
-| `DEFAULT_PLAN` | Default Databricks plan | `Standard` |
+| `DEFAULT_PLAN` | Default Databricks plan | `Enterprise` |
 
 ### Supported AWS Regions
 
@@ -163,7 +163,6 @@ The application includes a comprehensive database of AWS instance types sourced 
 
 ### Supported Databricks Plans
 
-- **Standard**: Basic features and support
 - **Premium**: Advanced features and priority support
 - **Enterprise**: Full enterprise features and dedicated support
 

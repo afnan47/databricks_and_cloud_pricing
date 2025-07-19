@@ -41,7 +41,7 @@ CLOUD_PROVIDERS = ["AWS"]  # GCP, Azure for future
 # Default settings
 DEFAULT_REGION = "us-east-1"
 DEFAULT_COMPUTE_TYPE = "Jobs Compute"
-DEFAULT_PLAN = "Standard"
+DEFAULT_PLAN = "Enterprise"
 DEFAULT_CLOUD_PROVIDER = "AWS"
 
 def load_instance_types_from_file():
