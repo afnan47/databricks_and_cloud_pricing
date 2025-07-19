@@ -99,11 +99,6 @@ st.markdown("""
         padding-bottom: 0.75rem;
     }
     
-    /* Sidebar styling - More specific selector to prevent flashing */
-    [data-testid="stSidebar"] > div:first-child {
-        background-color: #F8F9FA;
-        border-right: 1px solid #E9ECEF;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -220,6 +215,7 @@ def display_results(results: List[PricingResult]):
 def main():
     """Main application function."""
 
+    st.title("💡 Databricks and Cloud Cost Calculator")
     st.markdown("<p style='text-align: center; font-size: 1.1rem; color: #555;'>An interactive tool to estimate your infrastructure and Databricks costs.</p>", unsafe_allow_html=True)
     
     if not VANTAGE_API_TOKEN:
@@ -233,6 +229,7 @@ def main():
     # --- Sidebar for global configuration (using original logic) ---
     with st.sidebar:
         st.header("⚙️ Configuration")
+        st.divider()
         
         cloud_provider = st.selectbox(
             "Cloud Provider", CLOUD_PROVIDERS, index=CLOUD_PROVIDERS.index(DEFAULT_CLOUD_PROVIDER)
