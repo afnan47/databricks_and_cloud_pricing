@@ -242,7 +242,7 @@ def main():
         available_plans = DATABRICKS_PLANS.copy()
         if cloud_provider == "AWS":
             available_plans = [plan for plan in DATABRICKS_PLANS if plan != "Standard"]
-            default_plan = "Premium" if DEFAULT_PLAN == "Standard" else DEFAULT_PLAN
+            default_plan = "Enterprise" if DEFAULT_PLAN == "Enterprise" else DEFAULT_PLAN
         else:
             default_plan = DEFAULT_PLAN
         

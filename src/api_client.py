@@ -199,39 +199,3 @@ class DatabricksAPIClient:
         except Exception as e:
             logger.error(f"Error getting instance pricing: {e}")
             return 0.0
-    
-    def _get_fallback_databricks_pricing(self, instance_type: str, compute_type: str, plan: str) -> Dict[str, float]:
-        """
-        Get fallback Databricks pricing when API fails.
-        
-        Args:
-            instance_type: AWS instance type
-            compute_type: Databricks compute type
-            plan: Databricks plan
-            
-        Returns:
-            Dictionary with base_rate and dbu_rate
-        """
-        # Base rates per plan
-        plan_multipliers = {
-            "Standard": 1.0,
-            "Premium": 1.25,
-            "Enterprise": 1.5
-        }
-        
-        # Base rates per compute type
-        compute_type_rates = {
-            "Jobs Compute": {"base": 0.40, "dbu": 0.55},
-            "All-Purpose Compute": {"base": 0.40, "dbu": 0.55},
-            "SQL Compute": {"base": 0.40, "dbu": 0.55},
-            "ML Runtime": {"base": 0.40, "dbu": 0.55}
-        }
-        
-        # Get base rates for the compute type
-        rates = compute_type_rates.get(compute_type, {"base": 0.40, "dbu": 0.55})
-        multiplier = plan_multipliers.get(plan, 1.0)
-        
-        return {
-            "base_rate": rates["base"] * multiplier,
-            "dbu_rate": rates["dbu"] * multiplier
-        } 
