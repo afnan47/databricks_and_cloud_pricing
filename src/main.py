@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 st.set_page_config(
     page_title="Cloud Cost Calculator",
     page_icon="💡",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
@@ -40,8 +40,8 @@ st.markdown("""
     .main .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
-        padding-left: 5rem;
-        padding-right: 5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
     }
 
     /* Title styling */
