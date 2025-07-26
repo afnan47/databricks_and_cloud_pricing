@@ -215,7 +215,7 @@ def display_results(results: List[PricingResult]):
 def main():
     """Main application function."""
 
-    st.title("💡 Databricks and Cloud Cost Calculator")
+    st.title("🧱 Databricks x Cloud Cost Calculator")
     st.markdown("<p style='text-align: center; font-size: 1.1rem; color: #555;'>An interactive tool to estimate your infrastructure and Databricks costs.</p>", unsafe_allow_html=True)
     
     if not VANTAGE_API_TOKEN:
