@@ -12,6 +12,9 @@ on:
 jobs:
   keep-app-alive:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
 
     steps:
       # 1. Checkout Repo Code
