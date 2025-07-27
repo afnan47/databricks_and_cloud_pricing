@@ -177,11 +177,8 @@ The application includes a comprehensive database of AWS instance types sourced 
 
 - [ ] Support for GCP and Azure
 - [ ] Excel export functionality
-- [ ] Multiple tasks under Databricks jobs
 - [ ] Cost optimization recommendations
 - [ ] Historical pricing tracking
-- [ ] Advanced filtering and search
-- [ ] Bulk import/export capabilities
 
 ## 🤝 Contributing
 
@@ -209,6 +206,6 @@ For additional help, please open an issue on GitHub.
 ## 🙏 Acknowledgments
 
 - [Vantage](https://www.vantage.sh/) for providing AWS pricing data
-- [Databricks](https://databricks.com/) for their public pricing APIs
+- [Databricks](https://databricks.com/) for their pricing APIs
 - [Streamlit](https://streamlit.io/) for the web framework
 - [Plotly](https://plotly.com/) for interactive visualizations
