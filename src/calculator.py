@@ -52,7 +52,7 @@ class PricingCalculator:
         try:
             # Get AWS pricing
             aws_hourly_rate = self.vantage_client.get_aws_pricing(
-                config.instance_type, config.region, config.plan
+                config.instance_type.replace('(Photon)', '').strip(), config.region, config.plan
             )
             
             if aws_hourly_rate is None:

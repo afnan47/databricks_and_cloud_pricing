@@ -25,7 +25,9 @@ AWS_REGIONS = [
 DATABRICKS_COMPUTE_TYPES = [
     "Jobs Compute",
     "All-Purpose Compute", 
-    "SQL Compute"
+    "SQL Compute",
+    "Jobs Compute Photon",
+    "All-Purpose Compute Photon",
 ]
 
 # Databricks Plans
